@@ -1,0 +1,93 @@
+//click on the balls for them to disappear
+// once all the balls are gone "Game Over" will be displayed
+
+int ballsCount = 5; // change the number of balls as you wish
+Ball [] balls = new Ball[ballsCount]; // create the array for all balls
+Title name = new Title(); 
+int ballsLeft = ballsCount;
+
+void setup () {
+  size(500, 500);
+  // initialze the balls
+  for (int i = 0; i < balls.length; i++) {
+    balls[i] = new Ball();
+  }
+}
+
+void draw () {
+  background(0);
+  // loop for displaying and moving all the balls
+  for (int i = 0; i < balls.length; i++) {
+    balls[i].display();
+    balls[i].move();
+  }
+  // initialize the name outside of the curly brackets so its displayed only once
+  name.display();
+}
+
+void mousePressed() {
+  for (int i = 0; i < balls.length; i ++) {
+    if (balls[i].pop()) {
+      // setting the disappearing of the balls
+      balls[i].x = -25; // or you can make the balls "blend in" by = color(0);
+      balls[i].y = -25;
+      ballsLeft --;
+    }
+  }
+}
+
+class Ball {
+
+  // attributes
+  float x = random(10, 490);//less than the canvas so the balls can bounce off the walls
+  float y = random(10, 490);
+  float xSpeed = random(-2, 2);//the higher the speed the faster the balls
+  float ySpeed = random(-2, 2);
+  float radius = 10;
+
+  void display () {
+    stroke(249, 245, 2);
+    strokeWeight(4);
+    noFill();
+    ellipse(x, y, radius*2, radius*2);//balls are 20 pxls
+  }
+
+  void move () {
+    x = x + xSpeed;
+    y = y + ySpeed;
+
+    // reverse speed if reaches the border of the canvas
+    // use -10 to make the balls bounce off of the canvas (10 is their radius)
+    if ((x > width-10) || (x < 10)) {
+      xSpeed = -xSpeed;
+    }
+    if ((y > height-10) || (y < 10)) {
+      ySpeed = -ySpeed;
+    }
+  }
+
+  // check if clicking the mouse (mouseX, mouseY) are inside the ball's radius
+  boolean pop() {
+    // measuring the distance between the mouse cursor and ball possition
+    float distance = sqrt((x - mouseX) * (x - mouseX) + (y - mouseY) * (y - mouseY));
+    if (distance <= radius) 
+      return true;
+    else return false;
+  }
+}
+
+class Title {
+
+  void display() {
+
+    // text in the game 
+    fill(2, 192, 249);
+    textSize(30);
+    text("Pop the Balls", 165, 160);
+    noFill();
+
+    if (ballsLeft == 0) {
+      text("Game Over", 180, 220);
+    }
+  }
+}
